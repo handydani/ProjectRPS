@@ -11,7 +11,8 @@
 #include <opencv2/highgui.hpp>
 #include <string>
 #include <array>
-
+//#include "Ron.h"
+#include "featureFinder.h"
 using namespace cv;
 using namespace std;
 
@@ -280,7 +281,7 @@ void screentext(Mat screen, int casetype)
         Vertblock(screen, 0,  50);
     }
     
-//prototype scrren text code
+//prototype screen text code
 //    if(casetype == 1)
 //    {
 //        //make 1 appear on screen
@@ -386,6 +387,7 @@ void waitgo(Mat screen,int xstart,int ystart, bool go)
 
 int main(int, char**)
 {
+    //Ron Ron;
     Mat img;
     int w = 800;
     
@@ -436,16 +438,17 @@ int main(int, char**)
     //for (;;)
     
     //cout<<getBuildInformation();
+    int errorcount = 0;
     for(int i = 0; i <143; i++)
     {
         // wait for a new frame from camera and store it into 'frame'
         cap.read(frame); //frame is a 640 by 480 pixel image
         // check if we succeeded
        
-        int errorcount = 0;
+        
         if(errorcount >9)
         {
-        cout<<"serror timeout";
+        cout<<"error timeout";
             return -1;
         }
         
@@ -521,7 +524,7 @@ rectangle(frame,
             try
             {
                 cout <<"made it this far\n";
-                imwrite("imtest1.jpg", frame);
+                imwrite("imtest.jpg", frame);
                 
                 //Rect myROI(200, 200, 200, 200);
                 Rect myROI(200, 200, 200, 200);
@@ -538,7 +541,7 @@ rectangle(frame,
             }
             catch(...)
             {
-                cout << "An exception occured\n";
+               // cout << "An exception occured\n"; debug comment
                 break;
             }
             
@@ -559,16 +562,24 @@ rectangle(frame,
 
     
     
+
+    
+    
     //Image thresholding
     
     //make binary images
     
     //pixel diff checker
     
+   // cout<<"Made it to thresh\n"; debug comment
+    
+    
     string basefile = "imtestbasecrop.jpg";
     string handfile = "imtestcrop.jpg";
     
     thresh(basefile, handfile); //run image threshold of base image and hand thrown image
+    
+    
     
     
     //call test image function
@@ -591,35 +602,59 @@ rectangle(frame,
 //    string namelist [19] =
 //    {
 //        
-//        "rock0.jpg",    "rock1.jpg",    "rock2.jpg",                                //0->2   case 0
-//        "paper0.jpg",   "paper1.jpg",   "paper2.jpg" , "paper3.jpg","paper4.jpg",   //3->7   case 1
-//        "scissor0.jpg", "scissor1.jpg", "scissor2.jpg",                             //8->10  case 2
-//        "mid0.jpg",     "mid1.jpg",     "mid2.jpg", "mid3.jpg",                     //11->14 case 3
-//        "high0.jpg",    "high1.jpg",    "high2.jpg",                                //15->17 case 4
-//        "blank.jpg"                                                                 //18->18 case 5
+//        "rock0.jpg",    "rock1.jpg",    "rock2.jpg",                               //0->2   case 0
+//        "paper0.jpg",   "paper1.jpg",   "paper2.jpg" , "paper3.jpg","paper4.jpg",  //3->7   case 1
+//        "scissor0.jpg", "scissor1.jpg", "scissor2.jpg",                            //8->10  case 2
+//        "blank.jpg",                                                               //11->14 case 3
+//        "high0.jpg",    "high1.jpg",    "high2.jpg",                               //15->17 case 4
+//        "mid0.jpg",     "mid1.jpg",     "mid2.jpg",   "mid3.jpg",                  //18->18 case 5
 //        
 //    };
     
     int testtype = -1;
     int result = -1;
     int bestresult =10000000;
+    string ufile = "binarytest.jpg";
+    cout<<"Made it to image compare\n";
     
     //be sure to change ii depending on which matrix is used
-    for(int ii = 0; ii < range; ii++){
-        
-    string ufile = "binarytest.jpg";
-    
-//    string tfile = "rock0.jpg";
-    string tfile = namelist[ii];
-    result = imgtest(tfile, ufile);
-        
-    if(result<bestresult)
+    for(int ii = 0; ii < range; ii++)
     {
-        bestresult = result;
-        testtype = ii;//stores which scenario is best
-    }
+        //cout<<"Made it to "<<ii<<"\n"; //debug comment
+        //string tfile = "rock0.jpg";
+        string tfile = namelist[ii];
+        result = imgtest(tfile, ufile);
+        
+        if(result<bestresult)
+        {
+            bestresult = result;
+            testtype = ii;//stores which scenario is best
+        }
     
     }
+    
+    cout<<"Made it past image compare ";
+    
+    
+    
+    cout<<"Made it to feature finder";//debug comment
+    
+    
+    //feature finder test///////////////////////
+    
+    Mat testimage = imread(ufile);
+    
+    featureFinder test = *new featureFinder();
+    
+    int r = test.horizontalFingerCheck(testimage);
+
+    cout<<"Featurefinder found this many fingers"<<r<<"\n";
+    
+    
+    /////////////////////////////
+    
+    
+    
     
   //  string handname [5] = {"rock", "paper", "scissors", "mid","flip"};
     
@@ -627,7 +662,7 @@ rectangle(frame,
     
     cout<<"best hand was "<< namelist[testtype] <<"I am "<<certain<< "% sure"<<"\n";
     
-    string handoptions[6] = {"rock", "paper", "scissors","flip off","high-five","blank"};
+    string handoptions[6] = {"rock", "paper", "scissors","blank","high-five","flip off"};
     
     int userhand;
     
@@ -663,7 +698,10 @@ rectangle(frame,
 
 
     int uwin;
-    int computerDecision = rand() % 3 - 1;
+    //int computerDecision = Ron.decision();
+    
+    int computerDecision = 2;
+    
     {
     cout << "The computer throws " << handoptions[computerDecision] << "\nUser threw "<< handoptions[userhand] << endl;
     }
@@ -713,12 +751,12 @@ rectangle(frame,
     }
     else if (uwin == 3)
     {
-        cout<<"... Did you just flip me off?\n";
-        cout<<"not cool dude\n";
+        cout<<"... Did you even try?\n";
         
-    }/Users/julianjulian/Documents/CODE/XCODEC++/facetest copy/facetest/main.cpp
+    }
     else if (uwin == 4)
-    {   //randomly generate options to say for easter eggs
+    {
+        //randomly generate options to say for easter eggs
         cout<<"Stop trying to high five me and lets play dude\n";
         cout<<"If I wanted to be your friend I would have asked by now, stop high fiving me and lets play\n";
         cout<<"Not sure whether you just tried to badly cover the camera or if you tried to high five me...\n"<<"either way, stop it!";
@@ -726,7 +764,8 @@ rectangle(frame,
     }
     else if (uwin == 5)
     {
-        cout<<"... Did you even try?\n";
+        cout<<"... Did you just flip me off?\n";
+        cout<<"not cool dude\n";
         
     }
     
