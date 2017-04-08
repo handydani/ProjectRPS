@@ -15,7 +15,9 @@ class Ron
       std::string mood;
   public:
       Ron();
-
+      void mood(int outcome);
+      void shakeHand(int handout);
+      int decision();
 };
 Ron::Ron()
 {

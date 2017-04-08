@@ -11,7 +11,7 @@
 #include <opencv2/highgui.hpp>
 #include <string>
 #include <array>
-//#include "Ron.h"
+#include "Ron.h"
 #include "featureFinder.h"
 #include <time.h>
 #include <ctime>
