@@ -11,45 +11,23 @@
 #include <string>
 class Ron
 {
-private:
-    std::string mood;
-    void show(std::string emotion)
-    {
-        
-    };
-    void memory()
-    {
-        
-    };
-    void readFile ()
-    {
-        
-    };
-    void writeFile ()
-    {
-        
-    };
-public:
-    Ron();
-    int decision ()
-    {
-        return 0;
-    };
-    void setMemory ()
-    {
-        
-    };
-    
-    
-    
+  private:
+      std::string mood;
+  public:
+      Ron();
+
 };
 Ron::Ron()
 {
-    
+
 }
-void Ron::show(std::string emotion)
+void Ron::mood(int outcome)
 {
-    
+
+}
+void Ron::shakeHand(int handout)
+{
+
 }
 int Ron::decision()
 {

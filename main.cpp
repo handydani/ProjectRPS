@@ -14,7 +14,7 @@
 //#include "Ron.h"
 #include "featureFinder.h"
 #include <time.h>
-#include <ctime> 
+#include <ctime>
 #include <vector>
 
 using namespace cv;
@@ -32,10 +32,10 @@ void thresh(string basename, string handname)
     int colsize = 200;
     Mat base = imread(basename);
     Mat hand = imread(handname);
-    
+
 
     Mat binimg(200,200, CV_8UC3, Scalar(0,0,0));
-    
+
     for(int row = 0; row < rowsize; row++)
     {
         for(int col = 0; col < colsize; col++)
@@ -44,39 +44,39 @@ void thresh(string basename, string handname)
             uchar bluehand 	= 	handcolor.val[0];
             uchar greenhand = 	handcolor.val[1];
             uchar redhand 	= 	handcolor.val[2];
-            
+
             Vec3b basecolor = 	base.at<Vec3b>( col, row);
             uchar bluebase 	= 	basecolor.val[0];
             uchar greenbase = 	basecolor.val[1];
             uchar redbase 	= 	basecolor.val[2];
-            
+
             //STE COLORS
             Vec3b WHITE = binimg.at<Vec3b>(Point(col,row));
             WHITE[0] = 255;
             WHITE[1] = 255;
             WHITE[2] = 255;
-            
+
             Vec3b BLACK = binimg.at<Vec3b>(Point(col,row));
             BLACK[0] = 0;
             BLACK[1] = 0;
             BLACK[2] = 0;
-            
-            
+
+
             int imgdiff1 = abs(bluehand - bluebase);
             int imgdiff2 = abs(greenhand - greenbase);
             int imgdiff3 = abs(redhand - redbase);
-            
-            
+
+
             int limit = 50; //threshold limit 35 good when && was used in if statement, but orange shirt problem occured
-            
-            
+
+
             //check diff in pixel spot of image
             if( imgdiff1 > limit || imgdiff2 > limit || imgdiff3 > limit)
             {
-                
+
                 //makes pixel white if doesn't match bachground
                 binimg.at<Vec3b>(Point(row,col)) = WHITE;
-                
+
             }
             else
             {
@@ -87,11 +87,11 @@ void thresh(string basename, string handname)
             {
                 imwrite("binarytest.jpg", binimg);
             }
-            
+
         }
     }
 
-    
+
 }
 
 
@@ -102,15 +102,15 @@ int imgtest(String testhand, String userhand, bool righthand)
 {
     int rowsize = 200;
     int colsize = 200;
-    
+
     Mat tester = imread(testhand);
     Mat user   = imread(userhand);
-    
+
     if(righthand == false)
     {
     flip(user, user, 1);//flip user hand so it looks right handed for image compare
     }
-    
+
     int diffcount = 0;
     for(int row = 0; row < rowsize; row++)
     {
@@ -118,22 +118,22 @@ int imgtest(String testhand, String userhand, bool righthand)
         {
             Vec3b binimgcolor   = 	user.at<Vec3b>( col, row);
             uchar bluebinimg 	= 	binimgcolor.val[0];
-            
+
             Vec3b testercolor   = 	tester.at<Vec3b>( col, row);
             uchar bluetester 	= 	testercolor.val[0];
-            
+
             //STE COLORS
-            
-            
+
+
             int imgdiff = abs(bluetester - bluebinimg);
-            
+
             int limit    = 35; //threshold limit
-            
+
             //check diff in pixel spot of image
             if( imgdiff > limit )
             {
                 diffcount++;
-                
+
             }
         }
     }
@@ -150,20 +150,20 @@ void Vertblock(Mat screen, int startx, int starty)
     BLUE[0] = 255;
     BLUE[1] = 0;
     BLUE[2] = 0;
-    
+
     int size = 50;
     int i = 5;
     //for loop to make top tip
     for (int y = starty; y < starty + 5; y++)
     {
-        
+
         for(int x = startx + i; x < startx  + (size/5); x++)
         {
             screen.at<Vec3b>(Point(x,y)) = BLUE;
         }
         i--;
     }
-    
+
     //for loop to make base
     for (int x = startx; x < startx  + (size/5); x++)
     {
@@ -172,10 +172,10 @@ void Vertblock(Mat screen, int startx, int starty)
             screen.at<Vec3b>(Point(x,y)) = BLUE;
         }
     }
-    
+
     //for loop to make bottom tip
     i = 5;
-    
+
     for (int y = starty+size; y >= starty+size - 5; y--)
     {
         for(int x = startx + i; x < startx + (size/5); x++)
@@ -184,8 +184,8 @@ void Vertblock(Mat screen, int startx, int starty)
         }
         i--;
     }
-    
-    
+
+
 }
 
 //horizontal block
@@ -196,14 +196,14 @@ void Horiblock(Mat screen, int startx, int starty)
     BLUE[0] = 255;
     BLUE[1] = 0;
     BLUE[2] = 0;
-    
+
     int size = 50;
-    
+
     //for loop to make left tip
     int i = 0;
     for (int x = startx ; x <= startx + 5; x++)
     {
-        
+
         for(int y = starty; y < starty  + i; y++)
         {
             screen.at<Vec3b>(Point(x,y)) = BLUE;
@@ -211,8 +211,8 @@ void Horiblock(Mat screen, int startx, int starty)
         i+=2;
     }
 
-    
-    
+
+
     // for loop to make base block
     for (int x = startx + 5; x < startx  + size - 5; x++)
     {
@@ -221,20 +221,20 @@ void Horiblock(Mat screen, int startx, int starty)
             screen.at<Vec3b>(Point(x,y)) = BLUE;
         }
     }
-    
+
     //for loop to make right tip
     i = 0;
     for (int x = startx + size ; x >= startx+ size - 5; x--)
     {
-        
+
         for(int y = starty; y < starty  + i; y++)
         {
             screen.at<Vec3b>(Point(x,y)) = BLUE;
         }
         i+=2;
     }
-    
-    
+
+
 }
 
 //text on screen function
@@ -250,11 +250,11 @@ void screentext(Mat screen, int casetype)
     //int rowlim = 20;
     //int collim = 20;
     //all characters are 30 by 30 pixels in size
-    
+
     //timer numbers are in upper left part of screen (0,0) and are 50 by 50 pixels
     //100 by 100?
-    
-    
+
+
     if(casetype == 1)
     {
         Vertblock(screen, 40,  0);
@@ -285,68 +285,7 @@ void screentext(Mat screen, int casetype)
         Vertblock(screen, 0,   0);
         Vertblock(screen, 0,  50);
     }
-    
-//prototype screen text code
-//    if(casetype == 1)
-//    {
-//        //make 1 appear on screen
-//        for (int x = 0; x <50; x++)
-//        {
-//            for(int y = 0; y < 30; y++)
-//            {
-//                screen.at<Vec3b>(Point(x,y)) = BLUE;
-//            }
-//        }
-//        
-//        for (int x = 30; x < 50; x++)
-//        {   for(int y = 30; y < 70; y++)
-//            {
-//                screen.at<Vec3b>(Point(x,y)) = BLUE;
-//            }
-//        }
-//        for (int x = 0; x <100; x++)
-//        {   for(int y = 70; y < 100; y++)
-//            {
-//                screen.at<Vec3b>(Point(x,y)) = BLUE;
-//            }
-//        }
-//        
-//    }//end of first if statement
-//    
-//    else if(casetype == 2)
-//    {
-//        //make 1 appear on screen
-//        for (int x = 0; x <50; x++)
-//        {
-//            for(int y = 0; y < 30; y++)
-//            {
-//                screen.at<Vec3b>(Point(x,y)) = BLUE;
-//            }
-//        }
-//        
-//        for (int x = 0; x < 15; x++)
-//        {   for(int y = 30; y < 50; y++)
-//        {
-//            screen.at<Vec3b>(Point(x,y)) = BLUE;
-//        }
-//        }
-//        
-//        for (int x = 30; x < 50; x++)
-//        {   for(int y = 30; y < 70; y++)
-//            {
-//                screen.at<Vec3b>(Point(x,y)) = BLUE;
-//            }
-//        }
-//        
-//        for (int x = 0; x <100; x++)
-//        {   for(int y = 70; y < 100; y++)
-//            {
-//                screen.at<Vec3b>(Point(x,y)) = BLUE;
-//            }
-//        }
-//        
-//    }//end of second if statement
-    
+
     //end of function
 }
 
@@ -357,28 +296,28 @@ void findcentroid(string filename)
     int rowsize = 200;
     int colsize = 200;
     Mat image = imread(filename);
-    
+
     //STE COLORS
     Vec3b WHITE = image.at<Vec3b>(Point(0,0));
     WHITE[0] = 255;
     WHITE[1] = 255;
     WHITE[2] = 255;
-    
+
     Vec3b BLACK = image.at<Vec3b>(Point(0,0));
     BLACK[0] = 0;
     BLACK[1] = 0;
     BLACK[2] = 0;
-    
+
     //make a vector for rows
-    
+
     //make avector for cols
-    
+
     int rowcount;
     int rowavg = 0;
-    
+
     int colcount = 0;
     int colavg = 0;
-    
+
     for(int row = 0; row < rowsize; row++)
     {
         for(int col = 0; col < colsize; col++)
@@ -387,19 +326,19 @@ void findcentroid(string filename)
             uchar bluebase 	= 	basecolor.val[0];
             uchar greenbase = 	basecolor.val[1];
             uchar redbase 	= 	basecolor.val[2];
-            
-            
-            
+
+
+
             if(bluebase == 255)
             {
-            
-                
-                
+
+
+
             }
-            
+
         }
     }
-    
+
 }
 
 
@@ -410,12 +349,12 @@ void waitgo(Mat screen,int xstart,int ystart, bool go)
     GREEN[0] = 0;
     GREEN[1] = 255;
     GREEN[2] = 0;
-    
+
     Vec3b RED = screen.at<Vec3b>(Point(0,0));
     RED[0] = 0;
     RED[1] = 0;
     RED[2] = 255;
-    
+
     if(go == true)
     {
         for(int x = xstart; x<= xstart + 100; x++)
@@ -436,16 +375,16 @@ void waitgo(Mat screen,int xstart,int ystart, bool go)
             }
         }
     }
-    
-    
-    
+
+
+
 }
 
 
 void ronshake(int handout)
 {
     //set up ron's window
-  
+
     Mat ronhand;
     namedWindow("RON", CV_WINDOW_NORMAL||WINDOW_KEEPRATIO);
     //ron shakes his hand
@@ -456,13 +395,13 @@ void ronshake(int handout)
         "hand3.png","hand4.png","hand5.png",
         "hand6.png","hand7.png","hand8.png","hand9.png"
     };
-    
+
     for(int i = 0; i<10;i++)
     {
         ronhand = imread(hands[i]);
         imshow("RON", ronhand);
         waitKey(300);
-        
+
     }
      string finalhand[3] =
     {
@@ -471,107 +410,115 @@ void ronshake(int handout)
     ronhand  = imread(finalhand[handout]);
     imshow("RON", ronhand);
     waitKey(3000);
-    
+
 }
 
 
 void ronmood(int outcome)
 {
-    
+
     Mat ronface;
-    
-    
+
+
     //unwin = 0; then user won
     //unwin = 1; then tie
     //unwin = 2; then user loss
     //unwin = 3; then user flipped the bird
     //unwin = 4; then user gave high five
-    
+
     if (outcome == 0)
     {
-        
+
         string mood[7] =
         {
             "sad0.png","sad1.png","sad2.png","sad3.png",
             "sad4.png","sad5.png","sad6.png"
         };
-        
+
         for(int i = 0; i<7;i++)
         {
             ronface  = imread(mood[i]);
             imshow("RON", ronface);
             waitKey(400);
-            
+
         }
-        
-        
+
+
     }
     else if (outcome == 1)
     {
-        
+
         string mood[5] =
         {
             "surprised0.png","surprised1.png","surprised2.png",
             "surprised3.png","surprised4.png"
         };
-        
+
         for(int i = 0; i<5;i++)
         {
             ronface  = imread(mood[i]);
             imshow("RON", ronface);
             waitKey(400);
-            
+
         }
-        
-        
+
+
     }
     else if (outcome == 2)
     {
-        
+
         string mood[5] =
         {
             "happy0.png","happy1.png","happy2.png",
             "happy3.png","happy4.png"
         };
-        
+
         for(int i = 0; i<5;i++)
         {
             ronface  = imread(mood[i]);
             imshow("RON", ronface);
             waitKey(400);
-            
+
         }
-        
-        
+
+
     }
     else
     {
     cout<<"More moods in DLC pack1\n";
     }
-    
-    
+
+
 }
+
+
+  //                  _
+  //  _ __ ___   __ _(_)_ __
+  // | '_ ` _ \ / _` | | '_ \
+  // | | | | | | (_| | | | | |
+  // |_| |_| |_|\__,_|_|_| |_|
+
 
 int main(int, char**)
 {
-    
-    
+
+
     bool righthand = false;
     int righttest;
-    
+
     cout<<"are you left handed or right handed? type 0 for left, anything else for right\n";
     cin>>righttest;
-    
+
     if(righttest != 0)
     {
         righthand = true;
     }
-    
-    
+
+
     //Ron Ron;
     Mat img;
     int w = 800;
-    
+
     // just some valid rectangle arguments
     int x = 0;
     int y = 0;
@@ -587,19 +534,19 @@ int main(int, char**)
     cv::rectangle(img, pt1, pt2, cv::Scalar(0, 255, 0));
     // essentially do the same thing
     cv::rectangle(img, rect, cv::Scalar(0, 255, 0));
-    
+
     //int rsize = 200;
     //int csize = 200;
-    
+
     Mat frame;
     Mat cropframe;
-  
-    
+
+
     //initialize a window
     //namedWindow("GAME ON", CV_WINDOW_AUTOSIZE);
     //resizeWindow("GAME ON", 400, 400);
-    
-    
+
+
     //--- INITIALIZE VIDEOCAPTURE
     VideoCapture cap;
     // open the default camera using default API
@@ -616,13 +563,13 @@ int main(int, char**)
         return -1;
     }
     //int i = 0;
-    
+
     //--- GRAB AND WRITE LOOP
     cout << "Start grabbing" << endl
     << "Press any key to terminate" << endl;
-   
+
     //for (;;)
-    
+
     //cout<<getBuildInformation();
     int errorcount = 0;
     for(int i = 0; i < 143; i++)
@@ -630,14 +577,14 @@ int main(int, char**)
         // wait for a new frame from camera and store it into 'frame'
         cap.read(frame); //frame is a 640 by 480 pixel image
         // check if we succeeded
-       
-        
+
+
         if(errorcount >9)
         {
         cout<<"error timeout";
             return -1;
         }
-        
+
         if (frame.empty())
         {
             cerr << "ERROR! blank frame grabbed\n";
@@ -647,8 +594,8 @@ int main(int, char**)
             //break;
         }
         flip(frame, frame, 1);//flip frame so it is not a mirror
-        
-        
+
+
 rectangle(frame,
           Point( (w/4)-5, (w/4)-5 ),
           Point( (w/2)+5, (w/2)+5),
@@ -662,8 +609,8 @@ rectangle(frame,
 //                  Scalar( 255, 255 - i * 1.78, 255),
 //                  5,
 //                  LINE_8);
-        
-        
+
+
         //if statements for timer
         // every 33 frames is one second
         // total loop is ~ 4.29 seconds
@@ -687,23 +634,23 @@ rectangle(frame,
         {
             screentext(frame,0);
         }
-        
-        
+
+
         //if statement to save base image of shirt
         if(i == 32)
         {
             cout <<"getting base image\n";
             imwrite("imtestbase.jpg", frame);
-            
+
             //Rect myROI(200, 200, 200, 200);
             Rect myROI(200, 200, 200, 200);
 
             cropframe = frame(myROI);//cropped to 200 by 200 pixel image
-            
+
             imwrite("imtestbasecrop.jpg", cropframe);
-            
+
         }
-        
+
         // if statement to save image of hand
         if(i == 140)
         {
@@ -712,18 +659,18 @@ rectangle(frame,
                 //cout <<"made it this far\n";
                 cout <<"closing camera\n";
                 imwrite("imtest.jpg", frame);
-                
+
                 //Rect myROI(200, 200, 200, 200);
                 Rect myROI(200, 200, 200, 200);
 
                 cropframe = frame(myROI);
-                
+
                 imwrite("imtestcrop.jpg", cropframe);
-                
+
                 frame.deallocate();
                 destroyAllWindows();
                 //cap.release();
-                
+
                 break;
             }
             catch(...)
@@ -731,52 +678,52 @@ rectangle(frame,
                // cout << "An exception occured\n"; debug comment
                 break;
             }
-            
-            
+
+
         }
-        
+
         //maybe try resizing window before showing it,
         //make 1280 by 750? max for mmy mac is 1280by800
-    
+
 
         // show live and wait for a key with timeout long enough to show images
-        
-        
-        
+
+
+
         //imshow("RPS! Live", frame);
         //namedWindow("GAME ON", CV_WINDOW_NORMAL||WINDOW_KEEPRATIO);
         //resizeWindow("GAME ON", 1280, 750);
         resize(frame, frame, cv::Size(frame.cols * 1.4,frame.rows * 1.4), 0, 0, CV_INTER_LINEAR);
         imshow("GAME ON", frame);
         waitKey(30);
-        
+
 }
     // the camera will be deinitialized automatically in VideoCapture destructor
-    
-    
+
+
     //image comparison starts
 
-    
-    
 
-    
-    
+
+
+
+
     //Image thresholding
-    
+
     //make binary images
-    
+
     //pixel diff checker
-    
+
    // cout<<"Made it to thresh\n"; debug comment
-    
-    
+
+
     string basefile = "imtestbasecrop.jpg";
     string handfile = "imtestcrop.jpg";
-    
+
     thresh(basefile, handfile); //run image threshold of base image and hand thrown image
-    
+
     //call test image function
-    
+
     //make an array of strings with names in each index
     int range = 12;
     string namelist [12] = {
@@ -787,29 +734,29 @@ rectangle(frame,
                            };
 
 
-    
+
     //when mid is included, rock and mid get confused,
     //may need to make a finger counter and other feature finder functions
-    
+
 //    int range = 19;
 //    string namelist [19] =
 //    {
-//        
+//
 //        "rock0.jpg",    "rock1.jpg",    "rock2.jpg",                               //0->2   case 0
 //        "paper0.jpg",   "paper1.jpg",   "paper2.jpg" , "paper3.jpg","paper4.jpg",  //3->7   case 1
 //        "scissor0.jpg", "scissor1.jpg", "scissor2.jpg",                            //8->10  case 2
 //        "blank.jpg",                                                               //11->14 case 3
 //        "high0.jpg",    "high1.jpg",    "high2.jpg",                               //15->17 case 4
 //        "mid0.jpg",     "mid1.jpg",     "mid2.jpg",   "mid3.jpg",                  //18->18 case 5
-//        
+//
 //    };
-    
+
     int testtype = -1;
     int result = -1;
     int bestresult =10000000;
     string ufile = "binarytest.jpg";
    // cout<<"Made it to image compare\n";
-    
+
     //be sure to change ii depending on which matrix is used
     for(int ii = 0; ii < range; ii++)
     {
@@ -817,48 +764,48 @@ rectangle(frame,
         //string tfile = "rock0.jpg";
         string tfile = namelist[ii];
         result = imgtest(tfile, ufile,righthand);
-        
+
         if(result<bestresult)
         {
             bestresult = result;
             testtype = ii;//stores which scenario is best
         }
-    
+
     }
-    
+
     //cout<<"Made it past image compare \n";
-    
-    
-    
+
+
+
    // cout<<"Made it to feature finder\n";//debug comment
-    
-    
+
+
     //feature finder test///////////////////////
-    
+
 //    Mat testimage = imread(ufile);
-//    
+//
 //    featureFinder test = *new featureFinder();
-//    
+//
 //    int r = test.horizontalFingerCheck(testimage);
 //
 //    cout<<"Featurefinder found this many fingers"<<r<<"\n";
-//    
-    
+//
+
     /////////////////////////////
-    
-    
-    
-    
+
+
+
+
   //  string handname [5] = {"rock", "paper", "scissors", "mid","flip"};
-    
+
     double certain = 100 - (bestresult/40000.0)*100;
-    
+
     cout<<"best hand was "<< namelist[testtype] <<"I am "<<certain<< "% sure"<<"\n";
-    
+
     string handoptions[6] = {"rock", "paper", "scissors","blank","high-five","flip off"};
-    
+
     int userhand;
-    
+
     if(testtype <=2)
     {
         userhand = 0;
@@ -871,48 +818,48 @@ rectangle(frame,
     else if(testtype <=10 && testtype>=8)
     {
         userhand = 2;
-        
+
     }
     else if(testtype <=14 && testtype>=11)
     {
         userhand = 3;
-        
+
     }
     else if(testtype <=17 && testtype>=15)
     {
         userhand = 4;
-        
+
     }
     else if(testtype >=18)
     {
         userhand = 5;
-        
+
     }
 
 
     int uwin;
-    
+
     //srand(time(NULL));
     srand(righttest);
-    
+
     int computerdecision = rand() % 3; //Ron.decision();
-    
+
     //int computerdecision = 2;
-    
+
     cout << "The computer throws " << handoptions[computerdecision] << "\nUser threw "<< handoptions[userhand] << endl;
-    
-    
-    
-  
-    
+
+
+
+
+
     //game logic
-    
+
     //unwin = 0; then user won
     //unwin = 1; then tie
     //unwin = 2; then user loss
     //unwin = 3; then user flipped the bird
     //unwin = 4; then user gave high five
-    
+
     if(userhand == 0 && computerdecision == 2  )
     {
         uwin = 0;
@@ -941,20 +888,20 @@ rectangle(frame,
     {
         uwin = 2;
     }
-    
+
     //ron hand animation
     ronshake(computerdecision);
 
     //ronmood animation
     ronmood(uwin);
-    
 
-    
+
+
 //    Mat testimage;
 //    testimage = imread("binarytest.jpg");
 //    imshow("this is only a test",testimage);
 //    waitKey(30);
-    
+
     //game result logic
     if (uwin == 0)
     {
@@ -979,21 +926,21 @@ rectangle(frame,
         cout<<"Stop trying to high five me and lets play dude\n";
         cout<<"If I wanted to be your friend I would have asked by now, stop high fiving me and lets play\n";
         cout<<"Not sure whether you just tried to badly cover the camera or if you tried to high five me...\n"<<"either way, stop it!";
-        
+
     }
     else if (uwin == 5)
     {
         cout<<"... Did you just flip me off?\n";
         cout<<"not cool dude\n";
-        
+
     }
-    
+
     cout<<"made it to the end of program\n";
-    
+
 
     try
     {
-       
+
         frame.deallocate();
         destroyAllWindows();
         cap.release();
@@ -1003,8 +950,84 @@ rectangle(frame,
         // cout << "An exception occured\n"; debug comment
     }
 
-    
+
     return 0;
 }
 
 
+    //                  _          __                   _
+    //    ___ _ __   __| |   ___  / _|  _ __ ___   __ _(_)_ __
+    //   / _ \ '_ \ / _` |  / _ \| |_  | '_ ` _ \ / _` | | '_ \
+    //  |  __/ | | | (_| | | (_) |  _| | | | | | | (_| | | | | |
+    //   \___|_| |_|\__,_|  \___/|_|   |_| |_| |_|\__,_|_|_| |_|
+     //
+
+
+
+int featureFinder::horizontalFingerCheck(Mat screen)
+{
+
+      //This code is based on the logic that we are traveling from left to right checking for white or black pixels.
+      //a range of 20 pixels of white or more means that we have found a finger
+
+      int rowsize = 200;
+      int colsize = 120; // a little more than half so that the rest of the palm is ignored
+      int numFingers = 0; //possibly delete later
+
+      Vec3b RED = screen.at<Vec3b>(Point(0,0));
+      RED[0] =   0;
+      RED[1] =   0;
+      RED[2] = 255;
+
+      for(int row = 0; row<200; row++)
+      {
+          for(int col = 40; col< 70; col++)
+          {
+                              Vec3b screencolor   = 	screen.at<Vec3b>( col, row);
+                              uchar bluescreen 	= 	screencolor.val[0];
+                              uchar greenscreen   = 	screencolor.val[1];
+                              uchar redscreen 	= 	screencolor.val[2];
+
+              if(bluescreen == 255)
+              {
+                  int whitecount = 0;
+                  //for loop to make red markers for debug purposes
+                  for(int i = 0; i<15; i++)
+                  {
+                      for(int j = 0;j<15;j++)
+                      {
+                          Vec3b screencolor   = 	screen.at<Vec3b>( col, row);
+                          uchar bluescreen 	= 	screencolor.val[0];
+
+                          if(bluescreen == 255)
+                          {
+                              whitecount++;
+                          }
+                          if (whitecount>150)
+                          {
+                              numFingers++;
+                              row = row + 20;
+                              break;
+                          }
+                          screen.at<Vec3b>(Point(col+i,row+j)) = RED;
+
+                      }
+                  }
+
+              }
+
+          }
+      }
+
+
+
+      imwrite("fingercheck.jpg",screen);
+
+      if( numFingers > 4)
+      {
+
+          cout << "Are you an alien" << endl;
+      }
+      return numFingers;
+
+}
