@@ -381,115 +381,17 @@ void waitgo(Mat screen,int xstart,int ystart, bool go)
 }
 
 
-void ronshake(int handout)
-{
-    //set up ron's window
-
-    Mat ronhand;
-    namedWindow("RON", CV_WINDOW_NORMAL||WINDOW_KEEPRATIO);
-    //ron shakes his hand
-    string filename;
-    string hands[10] =
-    {
-        "hand0.png","hand1.png","hand2.png",
-        "hand3.png","hand4.png","hand5.png",
-        "hand6.png","hand7.png","hand8.png","hand9.png"
-    };
-
-    for(int i = 0; i<10;i++)
-    {
-        ronhand = imread(hands[i]);
-        imshow("RON", ronhand);
-        waitKey(300);
-
-    }
-     string finalhand[3] =
-    {
-        "ronrock.png","ronpaper.png","ronscissor.png"
-    };
-    ronhand  = imread(finalhand[handout]);
-    imshow("RON", ronhand);
-    waitKey(3000);
-
-}
+// void ronshake(int handout)
+// {
+//
+//
+// }
 
 
-void ronmood(int outcome)
-{
-
-    Mat ronface;
-
-
-    //unwin = 0; then user won
-    //unwin = 1; then tie
-    //unwin = 2; then user loss
-    //unwin = 3; then user flipped the bird
-    //unwin = 4; then user gave high five
-
-    if (outcome == 0)
-    {
-
-        string mood[7] =
-        {
-            "sad0.png","sad1.png","sad2.png","sad3.png",
-            "sad4.png","sad5.png","sad6.png"
-        };
-
-        for(int i = 0; i<7;i++)
-        {
-            ronface  = imread(mood[i]);
-            imshow("RON", ronface);
-            waitKey(400);
-
-        }
-
-
-    }
-    else if (outcome == 1)
-    {
-
-        string mood[5] =
-        {
-            "surprised0.png","surprised1.png","surprised2.png",
-            "surprised3.png","surprised4.png"
-        };
-
-        for(int i = 0; i<5;i++)
-        {
-            ronface  = imread(mood[i]);
-            imshow("RON", ronface);
-            waitKey(400);
-
-        }
-
-
-    }
-    else if (outcome == 2)
-    {
-
-        string mood[5] =
-        {
-            "happy0.png","happy1.png","happy2.png",
-            "happy3.png","happy4.png"
-        };
-
-        for(int i = 0; i<5;i++)
-        {
-            ronface  = imread(mood[i]);
-            imshow("RON", ronface);
-            waitKey(400);
-
-        }
-
-
-    }
-    else
-    {
-    cout<<"More moods in DLC pack1\n";
-    }
-
-
-}
+// void ronmood(int outcome)
+// {
+//
+// }
 
 
   //                  _
@@ -889,12 +791,21 @@ rectangle(frame,
         uwin = 2;
     }
 
-    //ron hand animation
-    ronshake(computerdecision);
 
-    //ronmood animation
-    ronmood(uwin);
+    _____ ____ ___ _____   _        _  _____ _____ ____
+   | ____|  _ \_ _|_   _| | |      / \|_   _| ____|  _ \
+   |  _| | | | | |  | |   | |     / _ \ | | |  _| | |_) |
+   | |___| |_| | |  | |   | |___ / ___ \| | | |___|  _ <
+   |_____|____/___| |_|   |_____/_/   \_\_| |_____|_| \_\
+    {
 
+      //ron hand animation
+      ronshake(computerdecision);
+
+      //ronmood animation
+      ronmood(uwin);
+
+    }
 
 
 //    Mat testimage;
