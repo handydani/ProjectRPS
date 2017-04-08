@@ -13,6 +13,10 @@
 #include <array>
 //#include "Ron.h"
 #include "featureFinder.h"
+#include <time.h>
+#include <ctime> 
+#include <vector>
+
 using namespace cv;
 using namespace std;
 
@@ -24,7 +28,6 @@ using namespace std;
 //threshold function, generates binary images of photos taken by camera
 void thresh(string basename, string handname)
 {
-    
     int rowsize = 200;
     int colsize = 200;
     Mat base = imread(basename);
@@ -46,7 +49,6 @@ void thresh(string basename, string handname)
             uchar bluebase 	= 	basecolor.val[0];
             uchar greenbase = 	basecolor.val[1];
             uchar redbase 	= 	basecolor.val[2];
-            
             
             //STE COLORS
             Vec3b WHITE = binimg.at<Vec3b>(Point(col,row));
@@ -71,7 +73,6 @@ void thresh(string basename, string handname)
             //check diff in pixel spot of image
             if( imgdiff1 > limit || imgdiff2 > limit || imgdiff3 > limit)
             {
-
                 
                 //makes pixel white if doesn't match bachground
                 binimg.at<Vec3b>(Point(row,col)) = WHITE;
@@ -87,7 +88,6 @@ void thresh(string basename, string handname)
                 imwrite("binarytest.jpg", binimg);
             }
             
-            
         }
     }
 
@@ -98,13 +98,18 @@ void thresh(string basename, string handname)
 
 //image compare function, compares photo taken of user's hand to test photos in computer memory
 
-int imgtest(String testhand, String userhand)
+int imgtest(String testhand, String userhand, bool righthand)
 {
     int rowsize = 200;
     int colsize = 200;
     
     Mat tester = imread(testhand);
     Mat user   = imread(userhand);
+    
+    if(righthand == false)
+    {
+    flip(user, user, 1);//flip user hand so it looks right handed for image compare
+    }
     
     int diffcount = 0;
     for(int row = 0; row < rowsize; row++)
@@ -345,6 +350,60 @@ void screentext(Mat screen, int casetype)
     //end of function
 }
 
+//Method to find centroid of hand in binary image
+void findcentroid(string filename)
+{
+
+    int rowsize = 200;
+    int colsize = 200;
+    Mat image = imread(filename);
+    
+    //STE COLORS
+    Vec3b WHITE = image.at<Vec3b>(Point(0,0));
+    WHITE[0] = 255;
+    WHITE[1] = 255;
+    WHITE[2] = 255;
+    
+    Vec3b BLACK = image.at<Vec3b>(Point(0,0));
+    BLACK[0] = 0;
+    BLACK[1] = 0;
+    BLACK[2] = 0;
+    
+    //make a vector for rows
+    
+    //make avector for cols
+    
+    int rowcount;
+    int rowavg = 0;
+    
+    int colcount = 0;
+    int colavg = 0;
+    
+    for(int row = 0; row < rowsize; row++)
+    {
+        for(int col = 0; col < colsize; col++)
+        {
+            Vec3b basecolor = 	image.at<Vec3b>( col, row);
+            uchar bluebase 	= 	basecolor.val[0];
+            uchar greenbase = 	basecolor.val[1];
+            uchar redbase 	= 	basecolor.val[2];
+            
+            
+            
+            if(bluebase == 255)
+            {
+            
+                
+                
+            }
+            
+        }
+    }
+    
+}
+
+
+
 void waitgo(Mat screen,int xstart,int ystart, bool go)
 {
     Vec3b GREEN = screen.at<Vec3b>(Point(0,0));
@@ -383,10 +442,132 @@ void waitgo(Mat screen,int xstart,int ystart, bool go)
 }
 
 
+void ronshake(int handout)
+{
+    //set up ron's window
+  
+    Mat ronhand;
+    namedWindow("RON", CV_WINDOW_NORMAL||WINDOW_KEEPRATIO);
+    //ron shakes his hand
+    string filename;
+    string hands[10] =
+    {
+        "hand0.png","hand1.png","hand2.png",
+        "hand3.png","hand4.png","hand5.png",
+        "hand6.png","hand7.png","hand8.png","hand9.png"
+    };
+    
+    for(int i = 0; i<10;i++)
+    {
+        ronhand = imread(hands[i]);
+        imshow("RON", ronhand);
+        waitKey(300);
+        
+    }
+     string finalhand[3] =
+    {
+        "ronrock.png","ronpaper.png","ronscissor.png"
+    };
+    ronhand  = imread(finalhand[handout]);
+    imshow("RON", ronhand);
+    waitKey(3000);
+    
+}
 
+
+void ronmood(int outcome)
+{
+    
+    Mat ronface;
+    
+    
+    //unwin = 0; then user won
+    //unwin = 1; then tie
+    //unwin = 2; then user loss
+    //unwin = 3; then user flipped the bird
+    //unwin = 4; then user gave high five
+    
+    if (outcome == 0)
+    {
+        
+        string mood[7] =
+        {
+            "sad0.png","sad1.png","sad2.png","sad3.png",
+            "sad4.png","sad5.png","sad6.png"
+        };
+        
+        for(int i = 0; i<7;i++)
+        {
+            ronface  = imread(mood[i]);
+            imshow("RON", ronface);
+            waitKey(400);
+            
+        }
+        
+        
+    }
+    else if (outcome == 1)
+    {
+        
+        string mood[5] =
+        {
+            "surprised0.png","surprised1.png","surprised2.png",
+            "surprised3.png","surprised4.png"
+        };
+        
+        for(int i = 0; i<5;i++)
+        {
+            ronface  = imread(mood[i]);
+            imshow("RON", ronface);
+            waitKey(400);
+            
+        }
+        
+        
+    }
+    else if (outcome == 2)
+    {
+        
+        string mood[5] =
+        {
+            "happy0.png","happy1.png","happy2.png",
+            "happy3.png","happy4.png"
+        };
+        
+        for(int i = 0; i<5;i++)
+        {
+            ronface  = imread(mood[i]);
+            imshow("RON", ronface);
+            waitKey(400);
+            
+        }
+        
+        
+    }
+    else
+    {
+    cout<<"More moods in DLC pack1\n";
+    }
+    
+    
+}
 
 int main(int, char**)
 {
+    
+    
+    bool righthand = false;
+    int righttest;
+    
+    cout<<"are you left handed or right handed? type 0 for left, anything else for right\n";
+    cin>>righttest;
+    
+    if(righttest != 0)
+    {
+        righthand = true;
+    }
+    
+    
     //Ron Ron;
     Mat img;
     int w = 800;
@@ -414,6 +595,11 @@ int main(int, char**)
     Mat cropframe;
   
     
+    //initialize a window
+    //namedWindow("GAME ON", CV_WINDOW_AUTOSIZE);
+    //resizeWindow("GAME ON", 400, 400);
+    
+    
     //--- INITIALIZE VIDEOCAPTURE
     VideoCapture cap;
     // open the default camera using default API
@@ -439,7 +625,7 @@ int main(int, char**)
     
     //cout<<getBuildInformation();
     int errorcount = 0;
-    for(int i = 0; i <143; i++)
+    for(int i = 0; i < 143; i++)
     {
         // wait for a new frame from camera and store it into 'frame'
         cap.read(frame); //frame is a 640 by 480 pixel image
@@ -480,7 +666,7 @@ rectangle(frame,
         
         //if statements for timer
         // every 33 frames is one second
-        // total loop is 4.29 seconds
+        // total loop is ~ 4.29 seconds
         if(i < 33 )
         {
             waitgo(frame,200,10, false);
@@ -523,7 +709,8 @@ rectangle(frame,
         {
             try
             {
-                cout <<"made it this far\n";
+                //cout <<"made it this far\n";
+                cout <<"closing camera\n";
                 imwrite("imtest.jpg", frame);
                 
                 //Rect myROI(200, 200, 200, 200);
@@ -533,9 +720,9 @@ rectangle(frame,
                 
                 imwrite("imtestcrop.jpg", cropframe);
                 
-                //frame.deallocate();
+                frame.deallocate();
                 destroyAllWindows();
-                cap.release();
+                //cap.release();
                 
                 break;
             }
@@ -548,10 +735,19 @@ rectangle(frame,
             
         }
         
+        //maybe try resizing window before showing it,
+        //make 1280 by 750? max for mmy mac is 1280by800
     
 
         // show live and wait for a key with timeout long enough to show images
-        imshow("RPS! Live", frame);
+        
+        
+        
+        //imshow("RPS! Live", frame);
+        //namedWindow("GAME ON", CV_WINDOW_NORMAL||WINDOW_KEEPRATIO);
+        //resizeWindow("GAME ON", 1280, 750);
+        resize(frame, frame, cv::Size(frame.cols * 1.4,frame.rows * 1.4), 0, 0, CV_INTER_LINEAR);
+        imshow("GAME ON", frame);
         waitKey(30);
         
 }
@@ -578,9 +774,6 @@ rectangle(frame,
     string handfile = "imtestcrop.jpg";
     
     thresh(basefile, handfile); //run image threshold of base image and hand thrown image
-    
-    
-    
     
     //call test image function
     
@@ -615,7 +808,7 @@ rectangle(frame,
     int result = -1;
     int bestresult =10000000;
     string ufile = "binarytest.jpg";
-    cout<<"Made it to image compare\n";
+   // cout<<"Made it to image compare\n";
     
     //be sure to change ii depending on which matrix is used
     for(int ii = 0; ii < range; ii++)
@@ -623,7 +816,7 @@ rectangle(frame,
         //cout<<"Made it to "<<ii<<"\n"; //debug comment
         //string tfile = "rock0.jpg";
         string tfile = namelist[ii];
-        result = imgtest(tfile, ufile);
+        result = imgtest(tfile, ufile,righthand);
         
         if(result<bestresult)
         {
@@ -633,23 +826,23 @@ rectangle(frame,
     
     }
     
-    cout<<"Made it past image compare ";
+    //cout<<"Made it past image compare \n";
     
     
     
-    cout<<"Made it to feature finder";//debug comment
+   // cout<<"Made it to feature finder\n";//debug comment
     
     
     //feature finder test///////////////////////
     
-    Mat testimage = imread(ufile);
-    
-    featureFinder test = *new featureFinder();
-    
-    int r = test.horizontalFingerCheck(testimage);
-
-    cout<<"Featurefinder found this many fingers"<<r<<"\n";
-    
+//    Mat testimage = imread(ufile);
+//    
+//    featureFinder test = *new featureFinder();
+//    
+//    int r = test.horizontalFingerCheck(testimage);
+//
+//    cout<<"Featurefinder found this many fingers"<<r<<"\n";
+//    
     
     /////////////////////////////
     
@@ -698,28 +891,41 @@ rectangle(frame,
 
 
     int uwin;
-    //int computerDecision = Ron.decision();
     
-    int computerDecision = 2;
+    //srand(time(NULL));
+    srand(righttest);
     
-    {
-    cout << "The computer throws " << handoptions[computerDecision] << "\nUser threw "<< handoptions[userhand] << endl;
-    }
+    int computerdecision = rand() % 3; //Ron.decision();
+    
+    //int computerdecision = 2;
+    
+    cout << "The computer throws " << handoptions[computerdecision] << "\nUser threw "<< handoptions[userhand] << endl;
+    
+    
+    
+  
     
     //game logic
-    if(userhand == 0 && computerDecision == 2  )
+    
+    //unwin = 0; then user won
+    //unwin = 1; then tie
+    //unwin = 2; then user loss
+    //unwin = 3; then user flipped the bird
+    //unwin = 4; then user gave high five
+    
+    if(userhand == 0 && computerdecision == 2  )
     {
         uwin = 0;
     }
-    else if(userhand == 1 && computerDecision == 0  )
+    else if(userhand == 1 && computerdecision == 0  )
     {
         uwin = 0;
     }
-    else if(userhand == 2 && computerDecision == 1 )
+    else if(userhand == 2 && computerdecision == 1 )
     {
         uwin = 0;
     }
-    else if(userhand == computerDecision)
+    else if(userhand == computerdecision)
     {
         uwin = 1;
     }
@@ -736,7 +942,20 @@ rectangle(frame,
         uwin = 2;
     }
     
-    //output logic
+    //ron hand animation
+    ronshake(computerdecision);
+
+    //ronmood animation
+    ronmood(uwin);
+    
+
+    
+//    Mat testimage;
+//    testimage = imread("binarytest.jpg");
+//    imshow("this is only a test",testimage);
+//    waitKey(30);
+    
+    //game result logic
     if (uwin == 0)
     {
         cout<<"user wins!\n";
@@ -752,7 +971,7 @@ rectangle(frame,
     else if (uwin == 3)
     {
         cout<<"... Did you even try?\n";
-        
+
     }
     else if (uwin == 4)
     {
@@ -770,6 +989,21 @@ rectangle(frame,
     }
     
     cout<<"made it to the end of program\n";
+    
+
+    try
+    {
+       
+        frame.deallocate();
+        destroyAllWindows();
+        cap.release();
+    }
+    catch(...)
+    {
+        // cout << "An exception occured\n"; debug comment
+    }
+
+    
     return 0;
 }
 
